@@ -1,5 +1,7 @@
 package io.github.eddieringle.android.apps.passwordmaker.ui.fragment;
 
+import com.google.common.reflect.TypeToken;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
@@ -17,8 +19,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import com.google.common.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,19 +117,23 @@ public class ProfileEditFragment extends Fragment {
         mOldName = mProfile.getProfileName();
 
         mCharsets = getResources().getStringArray(R.array.character_sets);
-        mCharacterSetAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, mCharsets);
+        mCharacterSetAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, mCharsets);
         mCharacterSet.setAdapter(mCharacterSetAdapter);
 
         mHashes = getResources().getStringArray(R.array.hash_algorithms);
-        mHashesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, mHashes);
+        mHashesAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, mHashes);
         mHashingAlgorithm.setAdapter(mHashesAdapter);
 
         mL33tLevels = getResources().getStringArray(R.array.l33t_levels);
-        mL33tLevelAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, mL33tLevels);
+        mL33tLevelAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, mL33tLevels);
         mL33tLevel.setAdapter(mL33tLevelAdapter);
 
         mL33tOrders = getResources().getStringArray(R.array.l33t_orders);
-        mL33tOrderAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, mL33tOrders);
+        mL33tOrderAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, mL33tOrders);
         mL33tOrder.setAdapter(mL33tOrderAdapter);
 
         setFields(mProfile);
@@ -138,7 +142,8 @@ public class ProfileEditFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile_edit, container, false);
         Views.inject(this, v);
         return v;
@@ -160,16 +165,17 @@ public class ProfileEditFragment extends Fragment {
         if (item.getItemId() == R.id.action_save && validateInputs()) {
             boolean addedEarly = false;
             ArrayList<PMProfile> profiles = new ArrayList<PMProfile>();
-            TypeToken<List<PMProfile>> listToken = new TypeToken<List<PMProfile>>(){};
+            TypeToken<List<PMProfile>> listToken = new TypeToken<List<PMProfile>>() {
+            };
             String listJson = getBaseActivity().getPrefs().getString("profiles", "");
             List<PMProfile> profileList = GsonUtils.fromJson(listJson, listToken.getType());
             for (PMProfile p : profileList) {
                 if (!addedEarly) {
-                  if (p.getProfileName().equals(mProfile.getProfileName())) {
-                    profiles.add(mProfile);
-                    addedEarly = true;
-                    continue;
-                  }
+                    if (p.getProfileName().equals(mProfile.getProfileName())) {
+                        profiles.add(mProfile);
+                        addedEarly = true;
+                        continue;
+                    }
                 }
                 if (p.getProfileName().equals(mOldName)) {
                     continue;
@@ -187,7 +193,8 @@ public class ProfileEditFragment extends Fragment {
                         .putString("current_profile", mProfile.getProfileName())
                         .commit();
             }
-            Toast.makeText(getBaseActivity(), R.string.toast_profile_save_success, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseActivity(), R.string.toast_profile_save_success,
+                    Toast.LENGTH_SHORT).show();
             getBaseActivity().setResult(Activity.RESULT_OK);
             getBaseActivity().finish();
             return true;
@@ -205,12 +212,15 @@ public class ProfileEditFragment extends Fragment {
         mUseProtocol.setChecked(profile.getUseUrlProtocol());
         mUseSubdomain.setChecked(profile.getUseUrlSubdomain());
 
-        mModifier.setText((profile.getModifier()!=null)?profile.getModifier():"");
-        mPasswordLength.setText((profile.getPasswordLength()!=null)?Integer.toString(profile.getPasswordLength()):"");
-        mPasswordPrefix.setText((profile.getPasswordPrefix()!=null)?profile.getPasswordPrefix():"");
-        mPasswordSuffix.setText((profile.getPasswordSuffix()!=null)?profile.getPasswordSuffix():"");
-        mProfileName.setText((profile.getProfileName()!=null)?profile.getProfileName():"");
-        mUsername.setText((profile.getUsername()!=null)?profile.getUsername():"");
+        mModifier.setText((profile.getModifier() != null) ? profile.getModifier() : "");
+        mPasswordLength.setText((profile.getPasswordLength() != null) ? Integer
+                .toString(profile.getPasswordLength()) : "");
+        mPasswordPrefix
+                .setText((profile.getPasswordPrefix() != null) ? profile.getPasswordPrefix() : "");
+        mPasswordSuffix
+                .setText((profile.getPasswordSuffix() != null) ? profile.getPasswordSuffix() : "");
+        mProfileName.setText((profile.getProfileName() != null) ? profile.getProfileName() : "");
+        mUsername.setText((profile.getUsername() != null) ? profile.getUsername() : "");
 
         final String charsetAlphaName = getString(R.string.charset_alpha_name);
         final String charsetAlphaNumName = getString(R.string.charset_alphanum_name);
@@ -462,9 +472,10 @@ public class ProfileEditFragment extends Fragment {
             mPasswordLength.setError("Password length cannot be blank");
             return false;
         }
-        if (PMConstants.CHARSET_CUSTOM.equals((String)mCharacterSet.getTag())) {
+        if (PMConstants.CHARSET_CUSTOM.equals((String) mCharacterSet.getTag())) {
             if (mCustomCharacterSet.getText().toString().length() < 2) {
-                mCustomCharacterSet.setError("Custom character set must contain at least 2 characters");
+                mCustomCharacterSet
+                        .setError("Custom character set must contain at least 2 characters");
                 return false;
             }
         }
@@ -477,14 +488,14 @@ public class ProfileEditFragment extends Fragment {
         mProfile.setUsername(mUsername.getText().toString());
         mProfile.setPasswordSuffix(mPasswordSuffix.getText().toString());
         mProfile.setPasswordPrefix(mPasswordPrefix.getText().toString());
-        if (PMConstants.CHARSET_CUSTOM.equals((String)mCharacterSet.getTag())) {
+        if (PMConstants.CHARSET_CUSTOM.equals((String) mCharacterSet.getTag())) {
             mProfile.setCharacterSet(mCustomCharacterSet.getText().toString());
         } else {
-            mProfile.setCharacterSet((String)mCharacterSet.getTag());
+            mProfile.setCharacterSet((String) mCharacterSet.getTag());
         }
-        mProfile.setHashAlgorithm((String)mHashingAlgorithm.getTag());
+        mProfile.setHashAlgorithm((String) mHashingAlgorithm.getTag());
         mProfile.setL33tLevel(mL33tLevel.getSelectedItemPosition());
-        mProfile.setL33tOrder((String)mL33tOrder.getTag());
+        mProfile.setL33tOrder((String) mL33tOrder.getTag());
         mProfile.setModifier(mModifier.getText().toString());
         mProfile.setPasswordLength(Integer.parseInt(mPasswordLength.getText().toString()));
 

@@ -1,5 +1,9 @@
 package io.github.eddieringle.android.apps.passwordmaker.ui.fragment;
 
+import com.squareup.otto.Subscribe;
+
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -23,10 +27,6 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.squareup.otto.Subscribe;
-
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.ArrayList;
 
@@ -68,13 +68,14 @@ public class GenerateFragment extends Fragment {
     ImageButton mCopyPassword;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_generate, container, false);
         Views.inject(this, v);
 
         mWebView = new WebView(getActivity());
         mWebView.setVisibility(View.GONE);
-        ((ViewGroup)((ViewGroup)v).getChildAt(0)).addView(mWebView);
+        ((ViewGroup) ((ViewGroup) v).getChildAt(0)).addView(mWebView);
 
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.addJavascriptInterface(new PmxAppInterface(GenerateFragment.this), "pmxApp");
@@ -91,17 +92,24 @@ public class GenerateFragment extends Fragment {
                 if ("file:///android_asset/passwordmaker.html".equals(url)) {
                     StringBuilder sb = new StringBuilder();
                     sb.append("javascript:pmxApp.submitPassword(pmxGenerate(");
-                    sb.append("'" + StringEscapeUtils.escapeEcmaScript(mSelectedProfile.getCharacterSet()) + "',");
+                    sb.append("'" + StringEscapeUtils
+                            .escapeEcmaScript(mSelectedProfile.getCharacterSet()) + "',");
                     sb.append("'" + mSelectedProfile.getHashAlgorithm() + "',");
                     sb.append("'" + mSelectedProfile.getL33tOrder() + "',");
                     sb.append(Integer.toString(mSelectedProfile.getL33tLevel()) + ",");
                     sb.append(Integer.toString(mSelectedProfile.getPasswordLength()) + ",");
                     sb.append("'" + mMasterPassword.getText().toString() + "',");
                     sb.append("'" + mInputText.getText().toString() + "',");
-                    sb.append("'" + StringEscapeUtils.escapeEcmaScript(mSelectedProfile.getUsername()) + "',");
-                    sb.append("'" + StringEscapeUtils.escapeEcmaScript(mSelectedProfile.getModifier()) + "',");
-                    sb.append("'" + StringEscapeUtils.escapeEcmaScript(mSelectedProfile.getPasswordPrefix()) + "',");
-                    sb.append("'" + StringEscapeUtils.escapeEcmaScript(mSelectedProfile.getPasswordSuffix()) + "',");
+                    sb.append(
+                            "'" + StringEscapeUtils.escapeEcmaScript(mSelectedProfile.getUsername())
+                                    + "',");
+                    sb.append(
+                            "'" + StringEscapeUtils.escapeEcmaScript(mSelectedProfile.getModifier())
+                                    + "',");
+                    sb.append("'" + StringEscapeUtils
+                            .escapeEcmaScript(mSelectedProfile.getPasswordPrefix()) + "',");
+                    sb.append("'" + StringEscapeUtils
+                            .escapeEcmaScript(mSelectedProfile.getPasswordSuffix()) + "',");
                     sb.append("pmxApp));"); /* callback */
 
                     mWebView.loadUrl(sb.toString());
@@ -159,9 +167,12 @@ public class GenerateFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!mGeneratedPassword.getText().toString().isEmpty()) {
-                    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                    clipboard.setPrimaryClip(ClipData.newPlainText("PMX Password", mGeneratedPassword.getText().toString()));
-                    Toast.makeText(getActivity(), "Password copied to clipboard", Toast.LENGTH_SHORT).show();
+                    ClipboardManager clipboard = (ClipboardManager) getActivity()
+                            .getSystemService(Context.CLIPBOARD_SERVICE);
+                    clipboard.setPrimaryClip(ClipData.newPlainText("PMX Password",
+                            mGeneratedPassword.getText().toString()));
+                    Toast.makeText(getActivity(), "Password copied to clipboard",
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity(), "No password to copy", Toast.LENGTH_SHORT).show();
                 }
@@ -236,7 +247,8 @@ public class GenerateFragment extends Fragment {
 
         @Override
         public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            return getBaseView(position, convertView, parent, android.R.layout.simple_spinner_dropdown_item);
+            return getBaseView(position, convertView, parent,
+                    android.R.layout.simple_spinner_dropdown_item);
         }
 
         @Override
