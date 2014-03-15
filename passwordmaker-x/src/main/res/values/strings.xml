@@ -37,6 +37,9 @@
 
     <string name="toast_profile_save_success">Profile saved</string>
     <string name="toast_profile_list_default">Default profile created due to empty profile list</string>
+    <string name="choose_dialog">Select file</string>
+    <string name="install_file_manager">Please install a file manager</string>
+    <string name="import_profiles">Import files</string>
 
     <!-- Character Sets -->
     <string name="charset_alpha">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</string>

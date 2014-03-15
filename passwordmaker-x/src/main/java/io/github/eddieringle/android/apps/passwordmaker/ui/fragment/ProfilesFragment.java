@@ -3,8 +3,10 @@ package io.github.eddieringle.android.apps.passwordmaker.ui.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,15 +32,19 @@ import io.github.eddieringle.android.apps.passwordmaker.ui.activity.BaseActivity
 import io.github.eddieringle.android.apps.passwordmaker.ui.activity.MainActivity;
 import io.github.eddieringle.android.apps.passwordmaker.ui.activity.ProfileEditActivity;
 import io.github.eddieringle.android.apps.passwordmaker.ui.adapter.BaseListAdapter;
+import io.github.eddieringle.android.apps.passwordmaker.util.FileUtils;
 import io.github.eddieringle.android.apps.passwordmaker.util.GsonUtils;
 
 public class ProfilesFragment extends ListFragment {
 
+    private static final String TAG = ProfilesFragment.class.getSimpleName();
     private ActionMode mActionMode;
 
     private ArrayList<PMProfile> mProfiles = new ArrayList<PMProfile>();
 
     private ProfilesListAdapter mAdapter;
+
+    private static final int FILE_SELECT_CODE = 0;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -74,6 +80,8 @@ public class ProfilesFragment extends ListFragment {
             newProfile.putExtra("profile", GsonUtils.toJson(emptyProfile));
             getBaseActivity().startActivityForResult(newProfile, 1);
             return true;
+        } else if(item.getItemId() == R.id.action_import_profile) {
+            showFileChooser();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -95,6 +103,43 @@ public class ProfilesFragment extends ListFragment {
         if (event != null && event.profileList != null) {
             loadProfiles(event.profileList);
         }
+    }
+
+    private void showFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(
+                    Intent.createChooser(intent, getString(R.string.choose_dialog)),
+                    FILE_SELECT_CODE);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            Toast.makeText(getActivity(), getString(R.string.install_file_manager),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case FILE_SELECT_CODE:
+                if (resultCode == getActivity().RESULT_OK) {
+                    // Get the Uri of the selected file
+                    Uri uri = data.getData();
+                    Log.d(TAG, "File Uri: " + uri.toString());
+                    // Get the path
+                    String path = FileUtils.getPath(getActivity(), uri);
+                    Toast.makeText(getActivity(), "file: "+path, Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "File Path: " + path);
+                    // Get the file instance
+                    // File file = new File(path);
+                    // Initiate the upload
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     class MultiChoiceModeImpl implements AbsListView.MultiChoiceModeListener {
@@ -199,4 +244,5 @@ public class ProfilesFragment extends ListFragment {
 
     public static class NeedProfileListRefreshEvent {
     }
+
 }
