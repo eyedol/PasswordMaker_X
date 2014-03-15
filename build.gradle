@@ -2,10 +2,19 @@ buildscript {
     repositories {
         mavenCentral()
     }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.9.+'
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
 }
 
 project.ext.set("versionCode", (int)(System.currentTimeMillis() / 1000))
 
-task wrapper(type: Wrapper) {
+/*task wrapper(type: Wrapper) {
     gradleVersion = "1.9"
-}
+}*/
