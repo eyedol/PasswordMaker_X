@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,12 +23,14 @@ import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
 import io.github.eddieringle.android.apps.passwordmaker.R;
+import io.github.eddieringle.android.apps.passwordmaker.core.PMChromeProfile;
 import io.github.eddieringle.android.apps.passwordmaker.core.PMConstants;
 import io.github.eddieringle.android.apps.passwordmaker.core.PMProfile;
 import io.github.eddieringle.android.apps.passwordmaker.ui.fragment.AboutFragment;
 import io.github.eddieringle.android.apps.passwordmaker.ui.fragment.GenerateFragment;
 import io.github.eddieringle.android.apps.passwordmaker.ui.fragment.ProfilesFragment;
 import io.github.eddieringle.android.apps.passwordmaker.util.GsonUtils;
+import io.github.eddieringle.android.apps.passwordmaker.util.XmlSerilizerUtil;
 
 public class MainActivity extends BaseActivity implements ActionBar.TabListener {
 
