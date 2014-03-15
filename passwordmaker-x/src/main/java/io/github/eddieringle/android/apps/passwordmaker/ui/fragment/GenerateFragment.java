@@ -102,10 +102,12 @@ public class GenerateFragment extends Fragment {
                     sb.append("'" + mInputText.getText().toString() + "',");
                     sb.append(
                             "'" + StringEscapeUtils.escapeEcmaScript(mSelectedProfile.getUsername())
-                                    + "',");
+                                    + "',"
+                    );
                     sb.append(
                             "'" + StringEscapeUtils.escapeEcmaScript(mSelectedProfile.getModifier())
-                                    + "',");
+                                    + "',"
+                    );
                     sb.append("'" + StringEscapeUtils
                             .escapeEcmaScript(mSelectedProfile.getPasswordPrefix()) + "',");
                     sb.append("'" + StringEscapeUtils

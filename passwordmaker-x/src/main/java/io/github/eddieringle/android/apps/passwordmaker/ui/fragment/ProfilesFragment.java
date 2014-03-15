@@ -3,8 +3,11 @@ package io.github.eddieringle.android.apps.passwordmaker.ui.fragment;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.common.reflect.TypeToken;
+import com.google.gson.JsonSyntaxException;
 
 import com.squareup.otto.Subscribe;
+
+import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,7 +18,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -134,7 +136,7 @@ public class ProfilesFragment extends ListFragment {
     }
 
     private boolean saveImportedProfiles(List<PMProfile> profiles) {
-        if(profiles !=null && profiles.size() > 0) {
+        if (profiles != null && profiles.size() > 0) {
 
             getBaseActivity().getPrefsEditor()
                     .putString("profiles", GsonUtils.toJson(profiles))
@@ -177,7 +179,8 @@ public class ProfilesFragment extends ListFragment {
                         }
                     } else {
 
-                        Toast.makeText(getActivity(), "Couldn't fetch the file", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Couldn't fetch the file", Toast.LENGTH_LONG)
+                                .show();
                     }
 
                 }
@@ -307,7 +310,7 @@ public class ProfilesFragment extends ListFragment {
                 String profileXml = Files.toString(file[0], Charsets.UTF_8);
                 profiles = XmlSerilizerUtil.createGson(true)
                         .fromXml(profileXml, PMChromeProfile.class);
-                if(profiles !=null && profiles.mProfileList.size() > 0) {
+                if (profiles != null && profiles.mProfileList.size() > 0) {
 
                     TypeToken<List<PMProfile>> listToken = new TypeToken<List<PMProfile>>() {
                     };
@@ -316,7 +319,7 @@ public class ProfilesFragment extends ListFragment {
 
                     List<PMProfile> pmProfiles = GsonUtils.fromJson(listJson, listToken.getType());
 
-                    for(PMChromeProfile.Profile p : profiles.mProfileList) {
+                    for (PMChromeProfile.Profile p : profiles.mProfileList) {
 
                         PMProfile pm = new PMProfile();
                         pm.setCharacterSet(p.getCharacterSet());
@@ -341,6 +344,8 @@ public class ProfilesFragment extends ListFragment {
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
+            } catch(JsonSyntaxException e) {
+                return false;
             }
             return false;
         }
@@ -348,7 +353,9 @@ public class ProfilesFragment extends ListFragment {
         @Override
         protected void onPostExecute(Boolean status) {
             stopProgressAction();
-            getBaseActivity().getBus().post(new NeedProfileListRefreshEvent());
+            if (status) {
+                getBaseActivity().getBus().post(new NeedProfileListRefreshEvent());
+            }
         }
     }
 
